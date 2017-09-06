@@ -1,0 +1,181 @@
+#include<stdio.h>
+#include<windows.h>
+#include<stdlib.h>
+#include<time.h>
+
+typedef struct _node Node;
+enum sig { false, true };
+struct _node
+{
+	int key;
+	struct _node *next;
+
+};
+
+Node *head, *tail; //빨래줄 양쪽 끝 못, 글로벌 area
+
+void init_list(void) // 힙 영역
+{
+	head = (Node *)malloc(sizeof(Node));
+	tail = (Node *)malloc(sizeof(Node));
+	head->next = tail; // ->를 만나면 앞에있는 것이 포인터
+	tail->next = tail;
+}
+void insert_list(int data)
+{
+	Node *nw = (Node *)malloc(sizeof(Node));
+	nw->key = data;
+	nw->next = head->next;
+	head->next = nw;
+
+}
+void print_list(void)
+{
+	Node *eye;
+
+	eye = head->next;// 첫번째 실질적 빨래를 eye를 본다
+	while (eye != tail)
+	{
+		printf("%d ", eye->key);
+		eye = eye->next;
+	}
+
+}
+
+int find_list(int data)
+{
+	Node *find;
+
+	find = head->next;
+	while (find->key != data && find != tail)
+	{
+
+		find = find->next;
+
+	}
+	if (find->key == data)
+	{
+		//puts("not found");
+		return 0;
+
+	}
+	else
+		//printf("%d\n", find->key);
+		return 1;
+
+}
+void delete_list(void)
+{
+	Node *del;
+	del = head->next;
+	head->next = del->next;
+	free(del);
+
+}
+void delete_all(void)
+{
+	Node *del;
+	Node *help = head;
+	del = help->next;
+	while (del != tail)
+	{
+		del = help->next;
+		help->next = del->next;
+		free(del);
+	}
+	head->next = tail; // 다 지우고 헤드가 테일을 봐야 링크가 됨
+
+}
+void find_delete(int data)
+{
+	Node *fir, *sec;
+
+	fir = head; //처음 못(링크의 시작)
+	sec = head->next; // 처음 빨래(링크시작부분뒤의 첫번쨰 실제 메모리)
+	while (sec->key != data && sec != tail)
+	{
+		fir = fir->next;
+		sec = fir->next;
+	}
+	fir->next = sec->next;
+	free(sec);
+
+}
+
+void ordered_insert(int data)
+{
+	Node *fir, *sec, *nw;
+	fir = head;
+	sec = head->next;
+	while (sec->key <= data && sec != tail)
+	{
+		fir = fir->next;
+		sec = fir->next;
+	}
+	nw = (Node *)malloc(sizeof(Node));
+	nw->key = data;
+	fir->next = nw;
+	nw->next = sec;
+
+}
+int check_list(int data, int ran)
+{
+	if (data == ran)
+		return 0;
+	else
+		return 1;
+}
+
+main()
+{
+	int ran;
+	init_list(); //빨래줄 만들기 완료
+	srand(time(NULL));
+	int cnt = 0;
+
+	do
+	{
+		ran = rand() % (10 + 1 - 1) + 1;
+		if (find_list(ran) != 0)
+		{
+			printf("%d을 입력\n", ran);
+			print_list();
+			ordered_insert(ran);
+			Sleep(1000);
+			cnt++;
+			//print_list();
+			system("cls");
+			if (cnt == 10)
+			{
+				puts("완료");
+				print_list();
+				break;
+			}
+		}
+		else
+		{
+			printf("%d는 중복\n", ran);
+			print_list();
+			Sleep(1000);
+			system("cls");
+		}
+	} while (1);
+
+
+	// ordered_insert(ran);
+	//}
+	//insert_list(3);
+	//insert_list(4);
+	//insert_list(5);
+	//print_list();
+	//find_list(3);
+	//delete_list();
+	//delete_all();
+	//ordered_insert(3);
+	//ordered_insert(1);
+	//ordered_insert(2);
+
+	//find_delete(3);
+	//print_list();
+}
+
