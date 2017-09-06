@@ -1,0 +1,194 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<time.h>
+#include<windows.h>
+enum sig { false, true };
+int create(int *num)
+{
+	int r = rand() % 25 + 1;
+	int x;
+	int i = 0;
+	while (i<25)
+	{
+		r = rand() % 25 + 1;
+		for (x = 0; x < i; x++)
+		{
+			if (num[x] == r) 
+			{
+				break;
+			}
+		}
+		if (x == i) 
+		{
+			num[i++] = r;
+		}
+
+
+	}
+}
+int find(int(*arr)[5], int num, int *a, int *b)
+{
+	int i, j;
+	for (i = 0; i<5; i++)
+	{
+		for (j = 0; j<5; j++)
+		{
+			if (arr[i][j] == num)
+			{
+				*a = i;
+				*b = j;
+				return true;
+			}
+		}
+	}
+}
+main()
+{
+	int user[5][5];
+	int com[5][5];
+	int r_num[25];
+	int r_num2[25];
+	int sum = 0;
+	int num, k=0;
+	int X = 88;
+	int a = 0, b = 0;
+	int i, j, x = 0;
+	srand(time(NULL));
+	create(r_num);
+	create(r_num2);
+	for (i = 0; i < 5; i++)
+	{
+		for (j = 0; j < 5; j++)
+		{
+			user[i][j] = r_num[x++];
+		}
+	}
+	x = 0;
+	for (i = 0; i < 5; i++)
+	{
+		for (j = 0; j < 5; j++)
+		{
+			com[i][j] = r_num2[x++];
+		}
+	}
+	while (1)
+	{
+		printf("User\n");
+		for (i = 0; i < 5; i++)
+		{
+			for (j = 0; j < 5; j++)
+			{
+				if (user[i][j] != 88)
+					printf("%-5d", user[i][j]);
+				else
+					printf("%-5c", user[i][j]);
+			}
+			puts(" ");
+		}
+		printf("COM\n");
+		for (i = 0; i < 5; i++)
+		{
+			for (j = 0; j < 5; j++)
+			{
+				if (com[i][j] != 88)
+					printf("%-5d", com[i][j]);
+				else
+					printf("%-5c", com[i][j]);
+			}
+			puts(" ");
+		}
+
+		printf("수를 입력하세요\n");
+		scanf("%d", &num);
+		if (find(user, num, &a, &b) == true)
+		{
+			user[a][b] = 88;
+			find(com, num, &a, &b);
+			com[a][b] = 88;
+
+		}
+
+		num = rand() % 25 + 1;
+		if (find(com, num, &a, &b) != true)
+		{
+			while (find(com, num, &a, &b) != true)
+			{
+				num = rand() % 25 + 1;
+			}
+
+		}
+		if (find(user, num, &a, &b) == true)
+		{
+			find(user, num, &a, &b);
+			user[a][b] = 88;
+			find(com, num, &a, &b);
+			com[a][b] = 88;
+			printf("%d 값을 컴퓨터가 뽑았습니다.\n", num);
+			Sleep(1000);
+		}
+		system("cls");
+		for (i = 0; i < 5; i++)
+		{
+			for (j = 0; j < 5; j++)
+			{
+				sum += user[i][j];
+			}
+			if (sum == 440)
+			{
+				//system("cls");
+				puts("bingo!!!!!!!!!");
+				return 0;
+			}
+			sum = 0;
+		}
+		for (i = 0; i < 5; i++)
+		{
+			sum = 0;
+			sum += user[0][i];
+			sum += user[1][i];
+			sum += user[2][i];
+			sum += user[3][i];
+			sum += user[4][i];
+			if (sum == 440)
+			{
+				//system("cls");
+				puts("bingo!!!!!!!!!");
+				return 0;
+			}
+			
+		}
+		sum = 0;
+		for (i = 0; i < 5; i++)
+		{
+			for (j = 0; j < 5; j++)
+			{
+				if (i == j)
+					sum += user[i][j];
+			}
+			if (sum == 440)
+			{
+				//system("cls");
+				puts("bingo!!!!!!!!!");
+				return 0;
+			}
+		}
+		sum = 0;
+		for (i = 0; i < 5; i++)
+		{
+			for (j = 0; j < 5; j++)
+			{
+				if(i+j==4)
+					sum += user[i][j];
+			}
+			
+			if (sum == 440)
+			{
+				//system("cls");
+				puts("bingo!!!!!!!!!");
+				return 0;
+			}
+		}
+
+
+	}
+}
